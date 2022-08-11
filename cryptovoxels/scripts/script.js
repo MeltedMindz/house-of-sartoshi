@@ -22,3 +22,58 @@ fetch(url)
     }
   })
 })
+
+
+//Makes an object grabbable v1.1 - Fayelure
+
+let Distance_to_player= .3 // How far the object is relative to the player (negative will be behind)
+let up_down_constant= -0.5  // Positive object will go higher, negative will go lower. eg: -0.65 places the object where your hands are, approximately. 0 will place the object right above your eyes.
+let refresh_rate = 50       // Number of milliseconds. Please avoid a refresh rate < 30 as it could crash the grid.
+
+let clone = true; // change this to false if you want to not clone the object.
+
+//-------------- Do not touch ---------------------------
+
+function moveObject(object,player){ // calculates new position of object
+
+  let spherePos = object.position;
+  let playerRotation = player.rotation;
+
+  let xDelta = Distance_to_player*Math.cos(-playerRotation.y+Math.PI/2 + Math.PI);
+  let yDelta = Distance_to_player*Math.tan(playerRotation.x);
+  let zDelta = Distance_to_player*Math.sin(-playerRotation.y+Math.PI/2 + Math.PI);
+
+      var positionRell = [
+    player.position.x - xDelta,
+    player.position.y - yDelta +(up_down_constant),
+    player.position.z - zDelta
+  ];
+
+return positionRell
+}
+
+function setPosition(newobject,e){ // refreshes the positions
+    newobject.set({position:moveObject(newobject,e.player)})
+  if(!newobject.position || !newobject.rotation){
+    parcel.removeFeature(newobject)
+  }else{
+  setTimeout(()=>{
+    setPosition(newobject,e)
+  },refresh_rate)
+  }
+}
+
+feature.on('click',e=>{ // On click, create new object and start refreshing the position
+let newobject = feature
+if(clone){
+newobject = parcel.createFeature('vox-model')
+newobject.set({scale:[feature.scale.x,feature.scale.y,feature.scale.z]})
+
+newobject.set({url:feature._content.url})
+newobject.position=feature.position
+newobject.rotation=feature.rotation
+}
+
+setPosition(newobject,e)
+
+})
