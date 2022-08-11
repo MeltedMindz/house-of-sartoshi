@@ -1,7 +1,9 @@
 # House of Sartoshi
 
 **Voxels:**
+
 16 Rand Extension
+
 15 Rand Extension
 
 
