@@ -4,8 +4,6 @@
 
 16 Rand Extension
 
-15 Rand Extension
-
 
 ## LICENSE (MIT)
 
